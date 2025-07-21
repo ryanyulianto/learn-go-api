@@ -20,10 +20,12 @@ type Customer struct {
 type CustomerRepository interface {
 	GetAll(ctx context.Context) ([]Customer, error)
 	FindById(ctx context.Context, id string) (Customer, error)
+	FindByEmail(ctx context.Context, email string) (Customer, error)
 	Save(ctx context.Context, customer *Customer) error
 	Update(ctx context.Context, customer *Customer) error
 	Delete(ctx context.Context, id string) error
 }
 type CustomerService interface {
 	Index(ctx context.Context) ([]dto.CustomerData, error)
+	Create(ctx context.Context, req dto.CreateCustomerRequest) error
 }
