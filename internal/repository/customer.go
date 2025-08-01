@@ -21,8 +21,11 @@ func NewCustomer(con *sql.DB) domain.CustomerRepository {
 	}
 }
 
-func (cr customerRepository) GetAll(ctx context.Context) (result []domain.Customer, err error) {
-	dataset := cr.db.From(customerTable).Where(goqu.C("deleted_at").IsNull())
+func (cr customerRepository) GetAll(ctx context.Context, status *string) (result []domain.Customer, err error) {
+	dataset := cr.db.From(customerTable).Where(goqu.C("deleted_at").IsNull()).Order(goqu.C("created_at").Desc())
+	if *status != "" {
+		dataset = dataset.Where(goqu.C("status").Eq(*status))
+	}
 	err = dataset.ScanStructsContext(ctx, &result)
 	return
 }

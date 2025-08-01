@@ -10,6 +10,13 @@ type CustomerData struct {
 type CreateCustomerRequest struct {
 	Name        string `json:"name" validate:"required"`
 	Email       string `json:"email" validate:"required,email"`
-	PhoneNumber int    `json:"phone_number" validate:"required"`
+	PhoneNumber int64  `json:"phone_number" validate:"required"`
+	Status      string `json:"status" validate:"required,oneof=active inactive"`
+}
+type UpdateCustomerRequest struct {
+	ID          string `json:"id" validate:"required"`
+	Name        string `json:"name" validate:"required"`
+	Email       string `json:"email" validate:"required,email"`
+	PhoneNumber int64  `json:"phone_number" validate:"required"`
 	Status      string `json:"status" validate:"required,oneof=active inactive"`
 }
