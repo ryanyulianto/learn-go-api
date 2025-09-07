@@ -24,9 +24,11 @@ type CustomerRepository interface {
 	Save(ctx context.Context, customer *Customer) error
 	Update(ctx context.Context, customer *Customer) error
 	Delete(ctx context.Context, id string) error
+	ForceDelete(ctx context.Context, id string) error
 }
 type CustomerService interface {
 	Index(ctx context.Context, queries map[string]string) ([]dto.CustomerData, error)
 	Create(ctx context.Context, req dto.CreateCustomerRequest) error
 	Update(ctx context.Context, req dto.UpdateCustomerRequest) error
+	Delete(ctx context.Context, id string, is_force ...bool) error
 }

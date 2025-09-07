@@ -3,6 +3,7 @@ package service
 import (
 	"belajar-go-api/domain"
 	"belajar-go-api/dto"
+	"belajar-go-api/internal/util"
 	"context"
 	"errors"
 
@@ -28,13 +29,13 @@ func (cs customerService) Index(ctx context.Context, queries map[string]string) 
 	customerData := make([]dto.CustomerData, len(customers))
 	for i, customer := range customers {
 		customerData[i] = dto.CustomerData{
-			ID:          customer.ID,
-			Name:        customer.Name,
-			Email:       customer.Email,
-			PhoneNumber: int(customer.PhoneNumber),
-			Status:      customer.Status,
+			ID:     customer.ID,
+			Name:   customer.Name,
+			Email:  customer.Email,
+			Status: customer.Status,
 		}
 	}
+
 	return customerData, nil
 }
 func (cs customerService) Create(ctx context.Context, req dto.CreateCustomerRequest) error {
@@ -77,6 +78,17 @@ func (cs customerService) Update(ctx context.Context, req dto.UpdateCustomerRequ
 	}
 	return cs.customerRepository.Update(ctx, &req_data)
 }
+func (cs customerService) Delete(ctx context.Context, id string, is_force ...bool) error {
+	_, err := cs.customerRepository.FindById(ctx, id)
+	if err != nil {
+		return err
+	}
+	forceDelete := util.OpParam(is_force, false)
+	if forceDelete {
+		return cs.customerRepository.ForceDelete(ctx, id)
+	}
+	return cs.customerRepository.Delete(ctx, id)
+}
 
 func (cs customerService) emailExists(ctx context.Context, email string, where_not_id *string) (bool, error) {
 	customer, err := cs.customerRepository.FindByEmail(ctx, email)
@@ -90,4 +102,8 @@ func (cs customerService) emailExists(ctx context.Context, email string, where_n
 		return false, errors.New("email already exists")
 	}
 	return customer.ID != "", nil
+}
+
+func Test() {
+
 }

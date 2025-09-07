@@ -13,7 +13,14 @@ func CreateResponseError(message string) Response[string] {
 		Data:    "",
 	}
 }
-func CreateResponseSuccess[T any](data T) Response[T] {
+func CreateResponseSuccess(message string) Response[string] {
+	return Response[string]{
+		Code:    "00",
+		Message: "Success",
+		Data:    "",
+	}
+}
+func CreateResponseSuccessData[T any](data T) Response[T] {
 	return Response[T]{
 		Code:    "00",
 		Message: "Success",

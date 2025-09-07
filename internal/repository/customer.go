@@ -9,7 +9,7 @@ import (
 	"github.com/doug-martin/goqu/v9"
 )
 
-const customerTable = "customer"
+const customerTable = "customers"
 
 type customerRepository struct {
 	db *goqu.Database
@@ -26,6 +26,7 @@ func (cr customerRepository) GetAll(ctx context.Context, status *string) (result
 	if *status != "" {
 		dataset = dataset.Where(goqu.C("status").Eq(*status))
 	}
+
 	err = dataset.ScanStructsContext(ctx, &result)
 	return
 }
@@ -51,6 +52,11 @@ func (cr customerRepository) Update(ctx context.Context, customer *domain.Custom
 }
 func (cr customerRepository) Delete(ctx context.Context, id string) error {
 	executor := cr.db.Update(customerTable).Where(goqu.C("id").Eq(id)).Set(goqu.Record{"deleted_at": sql.NullTime{Valid: true, Time: time.Now()}}).Executor()
+	_, err := executor.ExecContext(ctx)
+	return err
+}
+func (cr customerRepository) ForceDelete(ctx context.Context, id string) error {
+	executor := cr.db.Delete(customerTable).Where(goqu.C("id").Eq(id)).Executor()
 	_, err := executor.ExecContext(ctx)
 	return err
 }
